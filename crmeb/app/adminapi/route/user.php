@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2020 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -22,8 +22,6 @@ Route::group('user', function () {
     Route::get('user/syncUsers', 'v1.user.user/syncWechatUsers')->option(['real_name' => '同步微信用户']);
     //用户信息
     Route::get('user/user_save_info/:uid', 'v1.user.user/userSaveInfo')->option(['real_name' => '添加编辑用户信息时候的信息']);
-    //用户表单头
-    Route::get('user/type_header', 'v1.user.user/type_header')->option(['real_name' => '用户列表头部数据']);
     //赠送会员等级
     Route::get('give_level/:id', 'v1.user.user/give_level')->option(['real_name' => '赠送用户等级']);
     //执行赠送会员等级
@@ -135,9 +133,16 @@ Route::group('user', function () {
     Route::get('member/agreement', 'v1.user.member.MemberCardBatch/getAgreement')->option(['real_name' => '获取会员协议']);
     //用户标签（分类）树形列表
     Route::get('user_tree_label', 'v1.user.UserLabel/tree_list')->option(['real_name' => '用户标签（分类）树形列表']);
+
+    /** 用户注销 */
+    Route::get('cancel_list', 'v1.user.UserCancel/getCancelList')->option(['real_name' => '用户注销列表']);
+    Route::post('cancel/set_mark', 'v1.user.UserCancel/setMark')->option(['real_name' => '注销列表备注']);
+    Route::get('cancel/agree/:id', 'v1.user.UserCancel/agreeCancel')->option(['real_name' => '同意注销']);
+    Route::get('cancel/refuse/:id', 'v1.user.UserCancel/refuseCancel')->option(['real_name' => '拒绝注销']);
+
 })->middleware([
     \app\http\middleware\AllowOriginMiddleware::class,
     \app\adminapi\middleware\AdminAuthTokenMiddleware::class,
-    \app\adminapi\middleware\AdminCkeckRoleMiddleware::class,
+    \app\adminapi\middleware\AdminCheckRoleMiddleware::class,
     \app\adminapi\middleware\AdminLogMiddleware::class
 ]);

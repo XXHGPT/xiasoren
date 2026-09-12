@@ -1,7 +1,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2021 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -207,6 +207,15 @@ export function getSpreadInfo() {
  */
 export function spreadOrder(data) {
 	return request.post('spread/order', data);
+}
+
+/**
+ * 
+ * 事业部/推广订单
+ * @param object data
+ */
+export function divisionOrder(data) {
+	return request.post('division/order', data);
 }
 
 /*
@@ -531,8 +540,8 @@ export function memberOverdueTime(data) {
 }
 
 /**
- * 新版分享海报信息获取
- * 
+ * 新版分享海报信息获取
+ * 
  */
 export function spreadMsg() {
 	return request.get('user/spread_info');
@@ -540,23 +549,23 @@ export function spreadMsg() {
 
 
 /**
- * 图片链接转base64
- * 
+ * 图片链接转base64
+ * 
  */
 export function imgToBase(data) {
 	return request.post('image_base64', data);
 }
 
 /**
- * 获取小程序二维码
- * 
+ * 获取小程序二维码
+ * 
  */
 export function routineCode(data) {
 	return request.get('user/routine_code', data);
 }
 
 /**
- * 消息中心
+ * 消息中心
  */
 export function serviceRecord(data) {
 	return request.get('user/record', data);
@@ -577,6 +586,13 @@ export function getMsgDetails(id) {
 }
 
 /**
+ * 消息中心-消息已读/删除
+ */
+export function msgLookDel(data) {
+	return request.get('user/message_system/edit_message', data);
+}
+
+/**
  * 苹果账号登录
  * @param {Object} data
  */
@@ -589,8 +605,8 @@ export function appleLogin(data) {
 /*
  * 获取隐私协议
  * */
-export function getUserAgreement() {
-	return request.get("user_agreement", {}, {
+export function getUserAgreement(type) {
+	return request.get(`get_agreement/${type}`, {}, {
 		noAuth: true
 	});
 }
@@ -623,25 +639,53 @@ export function friendDetail(id) {
  * 员工列表
  * @param object data
  * 
-*/
-export function clerkPeople(data){
-  return request.get('agent/get_staff_list',data)
+ */
+export function clerkPeople(data) {
+	return request.get('agent/get_staff_list', data)
 }
 
 /**
  * 
  * 员工比例
  * @param object data
-*/
-export function setClerkPercent(data){
-  return request.post('agent/set_staff_percent',data);
+ */
+export function setClerkPercent(data) {
+	return request.post('agent/set_staff_percent', data);
 }
 
 /**
  * 
  * 删除员工
  * @param object data
-*/
-export function delClerkPercent(id){
-  return request.get(`agent/del_staff/${id}`);
+ */
+export function delClerkPercent(id) {
+	return request.get(`agent/del_staff/${id}`);
+}
+
+/**
+ * 注销用户
+ * @param int id
+ * 
+ */
+export function cancelUser() {
+	return request.get('user_cancel');
+}
+/**
+ * 获取多语言类型
+ */
+
+export function getLangList() {
+	return request.get('get_lang_type_list', {}, {
+		noAuth: true
+	})
+}
+
+/**
+ * 获取多语言JSON
+ */
+
+export function getLangJson() {
+	return request.get('get_lang_json', {}, {
+		noAuth: true
+	})
 }

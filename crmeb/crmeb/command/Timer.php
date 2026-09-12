@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2020 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -57,7 +57,7 @@ class Timer extends Command
     protected function execute(Input $input, Output $output)
     {
         $this->init($input, $output);
-        Worker::$pidFile = app()->getRootPath().'timer.pid';
+        Worker::$pidFile = app()->getRootPath().'runtime/timer.pid';
         $task = new Worker();
         $task->count = 1;
         event('Task_6');

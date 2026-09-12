@@ -9,6 +9,7 @@
 $uri = $_SERVER['REQUEST_URI'];
 $root = substr($uri, 0,strpos($uri, "install"));
 $admin = $root."../index.php/admin/index/";
+$host = $_SERVER['HTTP_HOST'];
 ?>
 </head>
 <body>
@@ -21,7 +22,7 @@ $admin = $root."../index.php/admin/index/";
       </div>
 	        <div class="bottom tac">
 	        <a href="<?php echo 'http://'.$host;?>" class="btn">进入前台</a>
-            <a href="<?php echo 'http://'.$host;?>/admin/" class="btn btn_submit J_install_btn">进入后台</a>
+            <a href="<?php echo 'http://'.$host;?>/admin" class="btn btn_submit J_install_btn">进入后台</a>
       </div>
       <div class=""> </div>
     </div>
@@ -42,6 +43,7 @@ $(function(){
 	    host:'<?php echo $host;?>',
         https:'<?php echo 'http://'.$host;?>',
         version:'<?php echo $version;?>',
+        version_code:'<?php echo $platform;?>',
         ip:<?php echo json_encode($ip);?>
     },
 	dataType: 'json',

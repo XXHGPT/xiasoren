@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2020 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -103,14 +103,14 @@ class StoreProductDao extends BaseDao
      * @param int $page
      * @param int $limit
      * @param array|string[] $field
+     * @param array|string[] $with
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function getSearchList(array $where, int $page = 0, int $limit = 0, array $field = ['*'])
+    public function getSearchList(array $where, int $page = 0, int $limit = 0, array $field = ['*'], array $with = ['couponId', 'description'])
     {
-        $with = ['couponId', 'description'];
         if (isset($where['star'])) $with[] = 'star';
         return $this->search($where)->with($with)->when($page != 0 && $limit != 0, function ($query) use ($page, $limit) {
             $query->page($page, $limit);
@@ -153,12 +153,14 @@ class StoreProductDao extends BaseDao
         })->when(!isset($where['ids']), function ($query) use ($where) {
             if (isset($where['timeOrder']) && $where['timeOrder'] == 1) {
                 $query->order('id desc');
+            } else if (isset($where['is_best']) && $where['is_best'] == 1) {
+                $query->order('sales desc,sort desc');
             } else {
                 $query->order('sort desc,id desc');
             }
         })->when(!$page && $limit, function ($query) use ($limit) {
             $query->limit($limit);
-        })->field($field)->select()->toArray();
+        })->order('sort desc')->field($field)->select()->toArray();
     }
 
     /**商品列表
@@ -223,7 +225,7 @@ class StoreProductDao extends BaseDao
             ->when($limit, function ($query) use ($limit) {
                 $query->limit($limit);
             })
-            ->order(($field == 'is_hot' ? 'sales DESC' : 'sort DESC') . ', id DESC')->select()->toArray();
+            ->order(in_array($field, ['is_hot', 'is_best']) ? 'sales DESC,sort DESC, id desc' : 'sort DESC, id desc')->select()->toArray();
 
     }
 

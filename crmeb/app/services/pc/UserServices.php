@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2020 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -79,7 +79,7 @@ class UserServices extends BaseServices
                 $list[$k]['price'] = $product['product']['price'] ?? 0;
                 $list[$k]['ot_price'] = $product['product']['ot_price'] ?? 0;
                 $list[$k]['sales'] = $product['product']['sales'] ?? 0;
-                $list[$k]['image'] = get_thumb_water($product['product']['image'] ?? 0);
+                $list[$k]['image'] = get_thumb_water($product['product']['image'] ?? 0, 'mid');
                 $list[$k]['is_del'] = $product['product']['is_del'] ?? 0;
                 $list[$k]['is_show'] = $product['product']['is_show'] ?? 0;
                 $list[$k]['is_fail'] = $product['product']['is_del'] && $product['product']['is_show'];

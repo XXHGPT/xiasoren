@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2020 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -214,12 +214,17 @@ class MessageServices extends BaseServices
                         $response = '上级用户不存在';
                     } else if ($loginService->updateUserInfo(['code' => $spreadUid], $userInfo, $is_new)) {
                         //写入扫码记录,返回内容
-                        $response = $wechatQrcodeService->wechatQrcodeRecord($qrcodeInfo, $userInfo, $spreadInfo);
+                        $response = $wechatQrcodeService->wechatQrcodeRecord($qrcodeInfo, $userInfo, $spreadInfo, 1);
                     }
                 } catch (\Exception $e) {
                     $response = $e->getMessage();
                 }
             }
+        }
+
+        // 更新关注标识
+        if (!is_string($response)) {
+            $wechatUser->subscribe($message->FromUserName);
         }
         return $response;
     }

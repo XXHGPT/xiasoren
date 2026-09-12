@@ -4,8 +4,8 @@
 			<view class='promoterHeader bg-color'>
 				<view class='headerCon acea-row row-between-wrapper'>
 					<view>
-						<view class='name'>累积推广订单</view>
-						<view><text class='num'>{{count || 0}}</text>单</view>
+						<view class='name'>{{$t(`累积推广订单`)}}</view>
+						<view><text class='num'>{{count || 0}}</text>{{$t(`单`)}}</view>
 					</view>
 					<view class='iconfont icon-2'></view>
 				</view>
@@ -15,7 +15,7 @@
 					<view class='item'>
 						<view class='title acea-row row-column row-center'>
 							<view class='data'>{{item.time}}</view>
-							<view>本月累计推广订单：{{item.count || 0}}单</view>
+							<view>{{$t(`本月累计推广订单`)}}：{{item.count || 0}}{{$t(`单`)}}</view>
 						</view>
 						<view class='listn'>
 							<block v-for="(child,indexn) in item.child" :key="indexn">
@@ -27,29 +27,32 @@
 											</view>
 											<view class='text line1'>{{child.nickname}}</view>
 										</view>
-										<view class='money' v-if="child.type == 'brokerage'">返佣：<text
-												class='font-color'>￥{{child.number}}</text></view>
-										<view class='money' v-else>暂未返佣：<text
-												class='font-color'>￥{{child.number}}</text></view>
+										<view class='money' v-if="child.type == 'brokerage'">{{$t(`返佣`)}}：<text
+												class='font-color'>{{$t(`￥`)}}{{child.number}}</text></view>
+										<view class='money' v-else>{{$t(`暂未返佣`)}}：<text
+												class='font-color'>{{$t(`￥`)}}{{child.number}}</text></view>
 									</view>
 									<view class='bottom'>
-										<view><text class='name'>订单编号：</text>{{child.order_id}}</view>
+										<view><text class='name'>{{$t(`订单编号`)}}：</text>{{child.order_id}}</view>
 										<view v-if="child.type == 'brokerage'"><text
-												class='name'>返佣时间：</text>{{child.time}}</view>
-										<view v-else><text class='name'>下单时间：</text>{{child.time}}</view>
-										<view class="more" v-if="child.children && child.children.length" @click="open(child)">
-											{{child.open?"收起":"更多"}}
-											<text class="iconfont" :class="child.open?'icon-xiangshang':'icon-xiangxia'"></text>
+												class='name'>{{$t(`返佣时间`)}}：</text>{{child.time}}</view>
+										<view v-else><text class='name'>{{$t(`下单时间`)}}：</text>{{child.time}}</view>
+										<view class="more" v-if="child.children && child.children.length"
+											@click="open(child)">
+											{{child.open?$t(`收起`):$t(`更多`)}}
+											<text class="iconfont"
+												:class="child.open?'icon-xiangshang':'icon-xiangxia'"></text>
 										</view>
 									</view>
 									<view class="more-record" v-if="child.open">
-										<view class="more-record-list" v-for="(sp,indexs) in child.children" :key="indexs">
+										<view class="more-record-list" v-for="(sp,indexs) in child.children"
+											:key="indexs">
 											<view class="more-record-box">
-												<view><text class='name'>单号：</text>{{sp.order_id}}</view>
-												<view class='money' v-if="sp.type == 'brokerage'">返佣：<text
-														class='font-color'>￥{{sp.number}}</text></view>
-												<view class='money' v-else>暂未返佣：<text
-														class='font-color'>￥{{sp.number}}</text></view>
+												<view><text class='name'>{{$t(`单号`)}}：</text>{{sp.order_id}}</view>
+												<view class='money' v-if="sp.type == 'brokerage'">{{$t(`返佣`)}}：<text
+														class='font-color'>{{$t(`￥`)}}{{sp.number}}</text></view>
+												<view class='money' v-else>{{$t(`暂未返佣`)}}：<text
+														class='font-color'>{{$t(`￥`)}}{{sp.number}}</text></view>
 											</view>
 										</view>
 									</view>
@@ -60,7 +63,7 @@
 				</block>
 			</view>
 			<view v-if="recordList.length == 0">
-				<emptyPage title="暂无推广订单～"></emptyPage>
+				<emptyPage :title="$t(`暂无推广订单～`)"></emptyPage>
 			</view>
 		</view>
 		<!-- #ifdef MP -->
@@ -74,7 +77,8 @@
 
 <script>
 	import {
-		spreadOrder
+		spreadOrder,
+		divisionOrder
 	} from '@/api/user.js';
 	import {
 		toLogin
@@ -106,20 +110,22 @@
 				times: [],
 				recordCount: 0,
 				count: 0,
+				orderType: 0,
 				isAuto: false, //没有授权的不会自动授权
 				isShowAuth: false //是否隐藏授权
 			};
 		},
 		computed: mapGetters(['isLogin']),
-		onLoad() {
+		onLoad(options) {
 			if (this.isLogin) {
-				this.getRecordOrderList();
+				this.orderType = options.type || 0
+				this.getRecordOrderList(options.type);
 			} else {
 				toLogin();
 			}
 		},
 		methods: {
-			open(item){
+			open(item) {
 				item.open = !item.open
 			},
 			onLoadFun() {
@@ -129,13 +135,22 @@
 			authColse: function(e) {
 				this.isShowAuth = e
 			},
-			getRecordOrderList: function() {
+			getRecordOrderList() {
 				let that = this;
 				let page = that.page;
 				let limit = that.limit;
 				let status = that.status;
 				if (status == true) return;
-				spreadOrder({
+				let fun
+				if (this.orderType) {
+					fun = divisionOrder
+					uni.setNavigationBarTitle({
+						title: that.$t(`推广订单列表`)
+					})
+				} else {
+					fun = spreadOrder
+				}
+				fun({
 					page: page,
 					limit: limit
 				}).then(res => {
@@ -149,7 +164,6 @@
 							})
 						}
 					}
-					console.log(this.recordList, this.times.length)
 					for (let x = 0; x < this.times.length; x++) {
 						for (let j = 0; j < res.data.list.length; j++) {
 							if (this.times[x] === res.data.list[j].time_key) {
@@ -158,14 +172,13 @@
 							}
 						}
 					}
-					console.log(this.recordList)
 					that.count = res.data.count || 0;
 					that.status = res.data.list.length < 5;
 					that.page += 1;
 				});
 			}
 		},
-		onReachBottom: function() {
+		onReachBottom() {
 			this.getRecordOrderList();
 		}
 	}
@@ -189,13 +202,16 @@
 		background-color: #fff;
 		// margin: 0 $uni-index-margin-row;
 		border-radius: 8rpx;
-		.more-record{
+
+		.more-record {
 			color: #999;
 			font-size: 24rpx;
-			.more-record-list{
+
+			.more-record-list {
 				padding: 20rpx 30rpx;
 				border-top: 1px solid #f2f2f2;
-				.more-record-box{
+
+				.more-record-box {
 					display: flex;
 					justify-content: space-between;
 				}
@@ -254,6 +270,7 @@
 			position: absolute;
 			right: 12rpx;
 			bottom: 24rpx;
+
 			.iconfont {
 				font-size: 22rpx;
 				margin-left: 5rpx;
