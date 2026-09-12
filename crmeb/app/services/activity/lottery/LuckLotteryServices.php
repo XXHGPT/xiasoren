@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -589,8 +589,7 @@ class LuckLotteryServices extends BaseServices
             return true;
         }
         $key = 'user_' . $type . '_luck_lottery_' . $uid;
-        $cache = CacheService::redisHandler();
-        return $cache->set($key, $lottery['factor_num'], 120);
+        return CacheService::set($key, $lottery['factor_num'], 120);
     }
 
     /**
@@ -603,7 +602,7 @@ class LuckLotteryServices extends BaseServices
     public function getCacheLotteryNum(int $uid, string $type = 'order')
     {
         $key = 'user_' . $type . '_luck_lottery_' . $uid;
-        $num = CacheService::redisHandler()->get($key);
+        $num = CacheService::get($key);
         return empty($num) ? 0 : $num;
     }
 
@@ -618,11 +617,10 @@ class LuckLotteryServices extends BaseServices
     {
         $key = 'user_' . $type . '_luck_lottery_' . $uid;
         $num = $this->getCacheLotteryNum($uid, $type);
-        $cache = CacheService::redisHandler();
         if ($num > 1) {
-            $cache->set($key, $num - 1, 120);
+            CacheService::set($key, $num - 1, 120);
         } else {
-            $cache->delete($key);
+            CacheService::delete($key);
         }
         return true;
     }

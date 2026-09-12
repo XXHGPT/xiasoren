@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -162,7 +162,7 @@ class LiveAnchorServices extends BaseServices
     public function syncAnchor($is_job = false)
     {
         $key = md5('Live_sync_status');
-        $res = CacheService::redisHandler()->get($key);
+        $res = CacheService::get($key);
         if (!$res || $is_job) {
             $start = 0;
             $limit = 30;
@@ -187,8 +187,8 @@ class LiveAnchorServices extends BaseServices
                 $this->dao->saveAll($dataAll);
             }
             //支付成功后发送消息
-            if (!$is_job) LiveJob::dispatchSece(120);
-            CacheService::redisHandler()->set($key, 1, 0);
+            if (!$is_job) LiveJob::dispatchSecs(120);
+            CacheService::set($key, 1, 0);
         }
         return true;
     }

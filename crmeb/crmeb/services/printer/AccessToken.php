@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -14,7 +14,6 @@ namespace crmeb\services\printer;
 use app\services\other\CacheServices;
 use crmeb\exceptions\AdminException;
 use crmeb\services\HttpService;
-use think\facade\Config;
 use think\helper\Str;
 
 /**
@@ -72,12 +71,33 @@ class AccessToken extends HttpService
      */
     protected $apiKey;
 
+    /**
+     * 飞鹅云SN
+     * @var string
+     */
+    protected $feySn;
+
+    /**
+     * 飞鹅云UYEK
+     * @var string
+     */
+    protected $feyUkey;
+
+    /**
+     * 飞鹅云USER
+     * @var string
+     */
+    protected $feyUser;
+
     public function __construct(array $config = [], string $name, string $configFile)
     {
         $this->clientId = $config['clientId'] ?? null;
         $this->apiKey = $config['apiKey'] ?? null;
         $this->partner = $config['partner'] ?? null;
         $this->machineCode = $config['terminal'] ?? null;
+        $this->feyUser = $config['feyUser'] ?? null;
+        $this->feyUkey = $config['feyUkey'] ?? null;
+        $this->feySn = $config['feySn'] ?? null;
         $this->name = $name;
         $this->configFile = $configFile;
     }
@@ -111,7 +131,7 @@ class AccessToken extends HttpService
         /** @var CacheServices $cacheServices */
         $cacheServices = app()->make(CacheServices::class);
         $this->accessToken[$this->name] = $cacheServices->getDbCache('YLY_access_token', function () {
-            $request = self::postRequest('https://open-api.10ss.net/auth/oauth', [
+            $request = self::postRequest('https://open-api.10ss.net/oauth/oauth', [
                 'client_id' => $this->clientId,
                 'grant_type' => 'client_credentials',
                 'sign' => strtolower(md5($this->clientId . time() . $this->apiKey)),
@@ -150,7 +170,7 @@ class AccessToken extends HttpService
      */
     public function __get($name)
     {
-        if (in_array($name, ['clientId', 'apiKey', 'accessToken', 'partner', 'terminal', 'machineCode'])) {
+        if (in_array($name, ['clientId', 'apiKey', 'accessToken', 'partner', 'terminal', 'machineCode', 'feyUser', 'feyUkey', 'feySn'])) {
             return $this->{$name};
         }
     }

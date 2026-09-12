@@ -1,7 +1,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -713,5 +713,76 @@ export function upgradeableListApi(params) {
     url: '/system/upgradeable/list',
     method: 'get',
     params,
+  });
+}
+
+/**
+ * 定时任务列表
+ * @param {*} params
+ * @returns
+ */
+export function timerIndex(params) {
+  return request({
+    url: `system/timer/list`,
+    params,
+  });
+}
+
+/**
+ * 修改定时任务状态
+ * @param {*} params
+ * @returns
+ */
+export function showTimer(id, is_open) {
+  return request({
+    url: `system/timer/set_open/${id}/${is_open}`,
+  });
+}
+
+/**
+ * 获取定时任务信息
+ * @param {*} params
+ * @returns
+ */
+export function timerInfo(id) {
+  return request({
+    url: `system/timer/info/${id}`,
+  });
+}
+
+/**
+ * 保存定时任务
+ * @param {*} data
+ * @returns
+ */
+export function saveTimer(data) {
+  return request({
+    url: `system/timer/save`,
+    method: 'post',
+    data,
+  });
+}
+
+/**
+ * 更新定时任务
+ * @param {*} id
+ * @param {*} data
+ * @returns
+ */
+export function updateTimer(id, data) {
+  return request({
+    url: `system/timer/update/${id}`,
+    method: 'post',
+    data,
+  });
+}
+
+/**
+ * 定时任务名称及标识
+ * @returns
+ */
+export function timerTask() {
+  return request({
+    url: `/system/timer/mark`,
   });
 }

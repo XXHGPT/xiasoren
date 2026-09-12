@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -68,10 +68,11 @@ class ProductController
      */
     public function getProductRoutineCode(Request $request)
     {
-        list($product_id) = $request->getMore([
+        list($product_id, $type) = $request->getMore([
             ['product_id', 0],
+            ['type', 'product'],
         ], true);
-        $routineCode = $this->services->getProductRoutineCode((int)$product_id);
+        $routineCode = $this->services->getProductRoutineCode((int)$product_id, $type);
         return app('json')->success(['routineCode' => $routineCode]);
     }
 

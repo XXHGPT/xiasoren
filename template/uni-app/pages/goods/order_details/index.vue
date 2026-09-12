@@ -198,7 +198,7 @@
 					<view class='conter' v-if="orderInfo.paid">{{$t(`已支付`)}}</view>
 					<view class='conter' v-else>{{$t(`未支付`)}}</view>
 				</view>
-				<view class='item acea-row row-between'>
+				<view class='item acea-row row-between' v-if="orderInfo.paid">
 					<view>{{$t(`支付方式`)}}：</view>
 					<view class='conter'>{{$t(orderInfo._status._payType)}}</view>
 				</view>
@@ -290,7 +290,7 @@
 					</view>
 				</view>
 			</view>
-			<view class='wrapper'>
+			<view class='wrapper' v-if="orderInfo.total_price">
 				<view class='item acea-row row-between'>
 					<view>{{$t(`商品总价`)}}：</view>
 					<view class='conter'>
@@ -301,9 +301,13 @@
 					<view>{{$t(`配送运费`)}}：</view>
 					<view class='conter'>{{$t(`￥`)}}{{parseFloat(orderInfo.pay_postage).toFixed(2)}}</view>
 				</view>
-				<view v-if="orderInfo.vip_true_price > 0" class='item acea-row row-between'>
-					<view>{{$t(`会员商品优惠`)}}：</view>
-					<view class='conter'>-{{$t(`￥`)}}{{parseFloat(orderInfo.vip_true_price).toFixed(2)}}</view>
+				<view v-if="orderInfo.levelPrice > 0" class='item acea-row row-between'>
+					<view>{{$t(`用户等级优惠`)}}：</view>
+					<view class='conter'>-{{$t(`￥`)}}{{parseFloat(orderInfo.levelPrice).toFixed(2)}}</view>
+				</view>
+				<view v-if="orderInfo.memberPrice > 0" class='item acea-row row-between'>
+					<view>{{$t(`付费会员优惠`)}}：</view>
+					<view class='conter'>-{{$t(`￥`)}}{{parseFloat(orderInfo.memberPrice).toFixed(2)}}</view>
 				</view>
 				<view class='item acea-row row-between' v-if='orderInfo.coupon_price > 0'>
 					<view>{{$t(`优惠券抵扣`)}}：</view>
@@ -317,9 +321,9 @@
 						class='money font-color'>{{$t(`￥`)}}{{parseFloat(orderInfo.pay_price).toFixed(2)}}</text></view>
 				<view class='actualPay acea-row row-right' v-else>
 					<view class="pay-people">
-						<image :src="orderInfo.help_info.pay_avatar" mode=""></image>
+						<image :src="orderInfo.help_info.pay_avatar" mode="代付头像"></image>
 						<view class="pay-nickname">
-							{{orderInfo.help_info.pay_nickname}}
+							{{orderInfo.help_info.pay_nickname || ''}}
 						</view>
 					</view>
 					{{$t(`总代付`)}}：<text
@@ -354,17 +358,17 @@
 					hover-class='none' :url="'/pages/goods/goods_logistics/index?orderId='+ orderInfo.order_id">
 					{{$t(`查看物流`)}}
 				</navigator>
-				<view class='bnt bg-color' v-if="orderInfo.type==3" @tap='goJoinPink'>{{$t(`查看拼团`)}}</view>
+				<view class='bnt bg-color' v-if="orderInfo.type == 3 && orderInfo.refund_type == 0" @tap='goJoinPink'>
+					{{$t(`查看拼团`)}}
+				</view>
 				<view class='bnt bg-color' v-if="status.class_status==3 && !split.length" @click='confirmOrder()'>
 					{{$t(`确认收货`)}}
-				</view>
-				<view class='bnt cancel' v-if="status.type==4 &&  !split.length ||status.type==-2" @tap='delOrder'>
-					{{$t(`删除订单`)}}
 				</view>
 				<view class='bnt bg-color' v-if="status.class_status==5" @tap='goOrderConfirm'>{{$t(`再次购买`)}}
 				</view>
 				<view class='bnt bg-color refundBnt'
-					v-if="[1,2,4].includes(orderInfo.refund_type) && !orderInfo.is_cancel" @tap='cancelRefundOrder'>
+					v-if="[1,2,4].includes(orderInfo.refund_type) && !orderInfo.is_cancel && orderInfo.type !=3"
+					@tap='cancelRefundOrder'>
 					{{$t(`取消申请`)}}
 				</view>
 				<view class='bnt bg-color refundBnt' v-if="orderInfo.refund_type== 4" @tap='refundInput'>
@@ -374,6 +378,9 @@
 					:url="'/pages/goods/goods_logistics/index?orderId='+ orderInfo.order_id + '&type=refund'">
 					{{$t(`查看退货物流`)}}
 				</navigator>
+				<view class='bnt cancel' v-if="status.type==4 &&  !split.length || status.type == -2" @tap='delOrder'>
+					{{$t(`删除订单`)}}
+				</view>
 			</view>
 		</view>
 		<home v-show="!aleartStatus && !invShow"></home>
@@ -572,6 +579,31 @@
 				this.getOrderInfo();
 				this.getUserInfo();
 				this.getCustomerType();
+				let options = wx.getEnterOptionsSync();
+				console.log(options)
+				if (options.scene == '1038' && options.referrerInfo.appId == 'wxef277996acc166c3') {
+					// 代表从收银台小程序返回
+					let extraData = options.referrerInfo.extraData;
+					if (!extraData) {
+						// "当前通过物理按键返回，未接收到返参，建议自行查询交易结果";
+						this.getOrderInfo();
+					} else {
+						if (extraData.code == 'success') {
+							// "支付成功";
+							this.getOrderInfo();
+						} else if (extraData.code == 'cancel') {
+							// "支付已取消";
+							this.$util.Tips({
+								title: this.$t(`支付已取消`)
+							});
+						} else {
+							// "支付失败：" + extraData.errmsg;
+							this.$util.Tips({
+								title: this.$t(`支付失败：${extraData.errmsg}`)
+							});
+						}
+					}
+				}
 			} else {
 				toLogin();
 			}
@@ -923,8 +955,10 @@
 							item.payStatus = res.data.friend_pay_status == 1 ? true : false;
 						}
 					});
+					
 					that.getOrderStatus();
 				}).catch(err => {
+					console.log(err,'err')
 					uni.hideLoading();
 					that.$util.Tips({
 						title: err

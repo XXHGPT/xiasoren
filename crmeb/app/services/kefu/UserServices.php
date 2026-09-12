@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -15,7 +15,6 @@ namespace app\services\kefu;
 use app\dao\user\UserDao;
 use app\services\BaseServices;
 use crmeb\exceptions\ApiException;
-use crmeb\traits\ServicesTrait;
 use app\services\user\UserLabelServices;
 use app\services\system\SystemUserLevelServices;
 use app\services\user\UserLabelRelationServices;
@@ -27,7 +26,6 @@ use app\services\kefu\service\StoreServiceRecordServices;
  */
 class UserServices extends BaseServices
 {
-    use ServicesTrait;
 
     /**
      * UserServices constructor.

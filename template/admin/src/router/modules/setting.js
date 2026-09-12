@@ -1,7 +1,7 @@
 // +---------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +---------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +---------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +---------------------------------------------------------------------
@@ -65,7 +65,6 @@ export default {
       path: 'system_config/:type?/:tab_id?',
       name: `${pre}setApp`,
       meta: {
-        ...meta,
         title: '应用设置',
       },
       component: () => import('@/pages/setting/setSystem/index'),
@@ -74,7 +73,6 @@ export default {
       path: 'system_config/payment/:type?/:tab_id?',
       name: `${pre}payment`,
       meta: {
-        ...meta,
         title: '支付配置',
       },
       component: () => import('@/pages/setting/setSystem/index'),

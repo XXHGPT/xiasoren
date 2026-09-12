@@ -1,7 +1,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -55,6 +55,7 @@ import Viewer from 'v-viewer';
 import VueDND from 'awe-dnd';
 import formCreate from '@form-create/iview';
 import modalForm from '@/utils/modalForm';
+import exportExcel from '@/utils/newToExcel.js'
 import videoCloud from '@/utils/videoCloud';
 import { modalSure } from '@/utils/public';
 import { authLapse } from '@/utils/authLapse';
@@ -67,10 +68,10 @@ import scroll from '@/libs/loading';
 import * as tools from '@/libs/tools';
 import VueTreeList from 'vue-tree-list';
 // 复制到粘贴板插件
-import VueClipboard from 'vue-clipboard2'
+import VueClipboard from 'vue-clipboard2';
 
-VueClipboard.config.copyText = true
-Vue.use(VueClipboard)
+VueClipboard.config.copyText = true;
+Vue.use(VueClipboard);
 Vue.use(VueTreeList);
 // 版本升级
 import upgrade from '@/components/upGrade/index.vue';
@@ -93,6 +94,7 @@ if (process.env.NODE_ENV !== 'production') require('@/mock');
 window.Promise = Promise;
 Vue.prototype.$modalForm = modalForm;
 Vue.prototype.$modalSure = modalSure;
+Vue.prototype.$exportExcel = exportExcel;
 Vue.prototype.$videoCloud = videoCloud;
 Vue.prototype.$authLapse = authLapse;
 Vue.prototype.$wechat = Auth;

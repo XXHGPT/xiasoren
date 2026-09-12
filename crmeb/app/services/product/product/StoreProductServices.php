@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -650,11 +650,11 @@ class StoreProductServices extends BaseServices
                 if ($type == -1) {
                     //下载商品轮播图
                     foreach ($slider_image as $s_image) {
-                        ProductCopyJob::dispatchDo('copySliderImage', [$res->id, $s_image, count($slider_image)]);
+                        ProductCopyJob::dispatch('copySliderImage', [$res->id, $s_image, count($slider_image)]);
                     }
                     preg_match_all('#<img.*?src="([^"]*)"[^>]*>#i', $description, $match);
                     foreach ($match[1] as $d_image) {
-                        ProductCopyJob::dispatchDo('copyDescriptionImage', [$res->id, $description, $d_image, count($match[1])]);
+                        ProductCopyJob::dispatch('copyDescriptionImage', [$res->id, $description, $d_image, count($match[1])]);
                     }
 
                 }
@@ -1268,9 +1268,14 @@ class StoreProductServices extends BaseServices
         $storeInfo['fsales'] = $storeInfo['ficti'] + $storeInfo['sales'];
         $storeInfo['custom_form'] = json_decode($storeInfo['custom_form'], true);
         $storeInfo['slider_image'] = set_file_url($storeInfo['slider_image'], $siteUrl);
-        /** @var QrcodeServices $qrcodeService */
-        $qrcodeService = app()->make(QrcodeServices::class);
-        $storeInfo['code_base'] = $qrcodeService->getWechatQrcodePath($id . '_product_detail_wap.jpg', '/pages/goods_details/index?id=' . $id);
+
+        if (sys_config('share_qrcode', 0) && request()->isWechat()) {
+            /** @var QrcodeServices $qrcodeService */
+            $qrcodeService = app()->make(QrcodeServices::class);
+            $storeInfo['wechat_code'] = $qrcodeService->getTemporaryQrcode('product-' . $id, $uid)->url;
+        } else {
+            $storeInfo['wechat_code'] = '';
+        }
 
         /** @var StoreProductRelationServices $storeProductRelationServices */
         $storeProductRelationServices = app()->make(StoreProductRelationServices::class);
@@ -1595,12 +1600,19 @@ class StoreProductServices extends BaseServices
 
     /**
      * 商品是否存在
-     * @param $productId
-     * @return bool
+     * @param int $productId
+     * @param string $field
+     * @return array|\think\Model|null
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @author 吴汐
+     * @email 442384644@qq.com
+     * @date 2023/02/15
      */
-    public function isValidProduct(int $productId)
+    public function isValidProduct(int $productId, string $field = '*')
     {
-        return $this->dao->getOne(['id' => $productId, 'is_del' => 0, 'is_show' => 1]);
+        return $this->dao->getOne(['id' => $productId, 'is_del' => 0, 'is_show' => 1], $field);
     }
 
     /**
@@ -1917,42 +1929,30 @@ class StoreProductServices extends BaseServices
         return $data;
     }
 
-
     /**
      * 商品分享二维码 推广员
      * @param int $id
      * @param string $userType
-     * @param array $user
-     * @return void
+     * @param $user
+     * @return mixed|string
      */
     public function getCode(int $id, string $userType, $user)
     {
         if (!$id || !$this->isValidProduct($id)) {
             throw new ApiException(410294);
         }
-        switch ($userType) {
-            case 'wechat':
-                //公众号
-                $name = $id . '_product_detail_' . $user['uid'] . '_is_promoter_' . $user['is_promoter'] . '_wap.jpg';
-                /** @var QrcodeServices $qrcodeService */
-                $qrcodeService = app()->make(QrcodeServices::class);
-                $url = $qrcodeService->getWechatQrcodePath($name, '/pages/goods_details/index?id=' . $id . '&spread=' . $user['uid']);
-                if ($url === false) {
-                    throw new ApiException(410167);
-                }
-                return image_to_base64($url);
-            case 'routine':
-                /** @var QrcodeServices $qrcodeService */
-                $qrcodeService = app()->make(QrcodeServices::class);
-                $url = $qrcodeService->getRoutineQrcodePath($id, $user['uid'], 0, ['is_promoter' => $user['is_promoter']]);
-                if (!$url) {
-                    throw new ApiException(410167);
-                } else {
-                    if ($url == 'unpublished') throw new ApiException('小程序尚未发布,无法生成商品海报');
-                    return $url;
-                }
-
+        if ($userType == 'routine') {
+            /** @var QrcodeServices $qrcodeService */
+            $qrcodeService = app()->make(QrcodeServices::class);
+            $url = $qrcodeService->getRoutineQrcodePath($id, $user['uid'], 0, ['is_promoter' => $user['is_promoter']]);
+            if (!$url) {
+                throw new ApiException(410167);
+            } else {
+                if ($url == 'unpublished') throw new ApiException('小程序尚未发布,无法生成商品海报');
+                return $url;
+            }
         }
+        return '';
     }
 
     /**
@@ -2035,11 +2035,11 @@ class StoreProductServices extends BaseServices
                 foreach ($ids as $product_id) {
                     $batchData[] = [
                         'id' => $product_id,
-                        'is_hot' => in_array('is_hot',$data['recommend']) ? 1 : 0,
-                        'is_benefit' => in_array('is_benefit',$data['recommend']) ? 1 : 0,
-                        'is_new' => in_array('is_new',$data['recommend']) ? 1 : 0,
-                        'is_good' => in_array('is_good',$data['recommend']) ? 1 : 0,
-                        'is_best' => in_array('is_best',$data['recommend']) ? 1 : 0
+                        'is_hot' => in_array('is_hot', $data['recommend']) ? 1 : 0,
+                        'is_benefit' => in_array('is_benefit', $data['recommend']) ? 1 : 0,
+                        'is_new' => in_array('is_new', $data['recommend']) ? 1 : 0,
+                        'is_good' => in_array('is_good', $data['recommend']) ? 1 : 0,
+                        'is_best' => in_array('is_best', $data['recommend']) ? 1 : 0
                     ];
                 }
                 if (count($batchData)) $this->dao->saveAll($batchData);

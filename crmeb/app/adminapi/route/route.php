@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -36,6 +36,7 @@ Route::group(function () {
     Route::get('get_workerman_url', 'PublicController/getWorkerManUrl')->option(['real_name' => '获取客服数据']);
     //测试
     Route::get('index', 'Test/index')->option(['real_name' => '测试地址']);
+    Route::get('h5', 'Test/h5pay')->option(['real_name' => '测试地址2']);
 })->middleware(AllowOriginMiddleware::class);
 
 /**

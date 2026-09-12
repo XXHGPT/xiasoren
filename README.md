@@ -44,6 +44,8 @@ CRMEB打通版是历经6年时间匠心之作！系统全开源可商用，包�
 
 CRMEB开源商城Java版：https://gitee.com/ZhongBangKeJi/crmeb_java
 
+
+
 ### 系统亮点
 ~~~
 多 语 言：后台随时配置语言包，移动端支持多语言切换；
@@ -124,10 +126,12 @@ APP下载：http://app.crmeb.cn/bzv （苹果手机直接在APP Store里搜索CR
 | [![](https://img.shields.io/badge/就眠儀式-LayuiVue-blue.svg)](https://gitee.com/layui/layui-vue) | [![](https://gitee.com/layui/layui-vue/badge/star.svg)](https://gitee.com/layui/layui-vue/stargazers) | layui-vue(谐音:类UI)是一套Vue3.0 的桌面端组件库.  |
 | [![](https://img.shields.io/badge/逆天的蝈蝈-TpFlow-blue.svg)](https://gitee.com/ntdgg/tpflow) | [![](https://gitee.com/ntdgg/tpflow/badge/star.svg?theme=gvp)](https://gitee.com/ntdgg/tpflow/stargazers) | TpFlow工作流引擎是一套规范化的流程管理系统，基于业务而驱动系统生命力的一套引擎.  |
 
-### 贡献支持
+### 商业版购买
 开源不易，以下如果有需要，请支持一下，感谢您的支持，让我们更多动力！
 
 [![](readme/pic/gitee2.png)](https://www.crmeb.com/index/criteria)
+
+### 🔥🔥庆祝：CRMEB开源商城系统Gitee star突破10000+  专属活动福利 [点击了解](https://www.crmeb.com/ask/thread/20738)
 
 ### 感谢参与开发者
 感谢大神们提交代码（排名不分先后）
@@ -163,7 +167,7 @@ UI：xy-yyds、LXT
 
 本项目包含的第三方源码和二进制文件之版权信息另行标注。
 
-版权所有Copyright © 2017-2022 by CRMEB (https://www.crmeb.com)
+版权所有Copyright © 2017-2023 by CRMEB (https://www.crmeb.com)
 
 All rights reserved。
 

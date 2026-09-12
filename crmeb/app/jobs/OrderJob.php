@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -212,7 +212,7 @@ class OrderJob extends BaseJobs
                                 $description .= '砍价商品：' . $title;
                                 $image = $bargainServices->value(['id' => $order['bargain_id']], 'image');
                             } else {
-                                $productIds = $cartInfoServices->getCartIdsProduct($order['cart_id']);
+                                $productIds = $cartInfoServices->getCartIdsProduct($order['id']);
                                 $storeProduct = $services->getProductArray([['id', 'in', $productIds]], 'image,store_name', 'id');
                                 if (count($storeProduct)) {
                                     foreach ($storeProduct as $value) {

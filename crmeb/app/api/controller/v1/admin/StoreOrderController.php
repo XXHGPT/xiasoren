@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -130,6 +130,7 @@ class StoreOrderController
         if (!$order) return app('json')->fail(410173);
         if ($order['paid']) {
             $order['nickname'] = $userServices->value(['uid' => $order['uid']], 'nickname');
+            $order['config_export_open'] = (bool)((int)sys_config('config_export_open'));
             $order = $order->hidden(['uid', 'status', 'paid'])->toArray();
             return app('json')->success($order);
         }

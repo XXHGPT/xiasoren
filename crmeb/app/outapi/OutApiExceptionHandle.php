@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -84,9 +84,9 @@ class OutApiExceptionHandle extends Handle
             'trace' => $e->getTrace(),
             'previous' => $e->getPrevious(),
         ] : [];
-        $message = Env::get('app_debug', false) ? '接口报错：' . $e->getMessage() : '很抱歉，系统开小差了';
+        $message = Env::get('app_debug', false) ? $e->getMessage() : '很抱歉，系统开小差了';
         // 添加自定义异常处理机制
-        if ($e instanceof AuthException || $e instanceof AdminException || $e instanceof ApiException) {
+        if ($e instanceof AuthException || $e instanceof AdminException || $e instanceof ApiException || $e instanceof ValidateException) {
             return app('json')->make($e->getCode() ?: 400, $message, $massageData);
         } else {
             return app('json')->fail($message, $massageData);

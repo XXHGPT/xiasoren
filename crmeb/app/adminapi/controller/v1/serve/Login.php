@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -107,7 +107,7 @@ class Login extends AuthController
         $res = $this->services->user()->login($account, $password);
         if ($res) {
             CacheService::clear();
-            CacheService::redisHandler()->set('sms_account', $account);
+            CacheService::set('sms_account', $account);
             $services->updateSmsConfig($account, $password);
             return app('json')->success(400139, $res);
         } else {

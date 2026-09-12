@@ -1,7 +1,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -88,9 +88,12 @@ export default function (formRequestPromise, { width = '700' } = { width: '700' 
             },
           },
         };
-        data.config.onSubmit = function (formData, $f) {
+        let btnStop = false;
+        data.config.onSubmit = (formData, $f) => {
           $f.btn.loading(true);
           $f.btn.disabled(true);
+          if (btnStop) return;
+          btnStop = true;
           request[data.method.toLowerCase()](data.action, formData)
             .then((res) => {
               modalInstance.remove();
@@ -101,6 +104,7 @@ export default function (formRequestPromise, { width = '700' } = { width: '700' 
               Message.error(err.msg || '提交失败');
             })
             .finally(() => {
+              btnStop = false;
               $f.btn.loading(false);
               $f.btn.disabled(false);
             });

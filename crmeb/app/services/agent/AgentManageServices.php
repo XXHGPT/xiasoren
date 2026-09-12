@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -66,7 +66,7 @@ class AgentManageServices extends BaseServices
                 $item['new_money'] = bcsub((string)$item['brokerage_price'], (string)$item['broken_commission'], 2);
             else
                 $item['new_money'] = 0;
-            $item['brokerage_money'] = $item['brokerage_price'];
+            $item['brokerage_money'] = bcadd((string)$item['brokerage_price'], (string)$item['extract_count_price'], 2);
             unset($item['extract'], $item['order'], $item['bill'], $item['spreadUser'], $item['spreadCount']);
             if (strpos($item['headimgurl'], '/statics/system_images/') !== false) {
                 $item['headimgurl'] = set_file_url($item['headimgurl']);

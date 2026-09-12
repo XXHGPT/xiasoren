@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -37,5 +37,16 @@ class CategoryController
         ]);
         $category = $this->services->getCategory($where);
         return app('json')->success($category);
+    }
+
+    /**
+     * @author 等风来
+     * @email 136327134@qq.com
+     * @date 2022/11/11
+     * @return mixed
+     */
+    public function getCategoryVersion()
+    {
+        return app('json')->success(['version' => $this->services->getCategoryVersion()]);
     }
 }

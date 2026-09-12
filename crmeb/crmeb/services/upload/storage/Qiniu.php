@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -120,15 +120,14 @@ class Qiniu extends BaseUpload
             return $this->setError('Upload file does not exist');
         }
         if ($this->validate) {
-            try {
-                $error = [
-                    $file . '.filesize' => 'Upload filesize error',
-                    $file . '.fileExt' => 'Upload fileExt error',
-                    $file . '.fileMime' => 'Upload fileMine error'
-                ];
-                validate([$file => $this->validate], $error)->check([$file => $fileHandle]);
-            } catch (\Exception $e) {
-                return $this->setError($e->getMessage());
+            if (!in_array(pathinfo($fileHandle->getOriginalName(), PATHINFO_EXTENSION), $this->validate['fileExt'])) {
+                return $this->setError('Upload fileExt error');
+            }
+            if (filesize($fileHandle) > $this->validate['filesize']) {
+                return $this->setError('Upload filesize error');
+            }
+            if (!in_array($fileHandle->getOriginalMime(), $this->validate['fileMime'])) {
+                return $this->setError('Upload fileMine error');
             }
         }
         $key = $this->saveFileName($fileHandle->getRealPath(), $fileHandle->getOriginalExtension());

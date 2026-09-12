@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -59,7 +59,7 @@ class TemplateJob extends BaseJobs
             //判断小程序还是公众号，获取数据id
             $is_type = $type == 'wechat' ? 'is_wechat' : 'is_routine';
             $key = $is_type == 'is_wechat' ? 'wechat_' . $tempCode : 'routine_' . $tempCode;
-            $tempid = CacheService::get($key, function () use ($type, $tempCode, $is_type) {
+            $tempid = CacheService::remember($key, function () use ($type, $tempCode, $is_type) {
                 /** @var SystemNotificationServices $notifyServices */
                 $notifyServices = app()->make(SystemNotificationServices::class);
                 return $notifyServices->getNotInfo(['type' => $is_type, 'mark' => $tempCode])['tempid'];

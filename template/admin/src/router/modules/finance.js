@@ -1,7 +1,7 @@
 // +---------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +---------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +---------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +---------------------------------------------------------------------
@@ -28,7 +28,7 @@ export default {
       path: 'billing_records/index',
       name: `${pre}billingRecords`,
       meta: {
-        auth: ['finance-user_extract'],
+        auth: ['finance-billing_records-index'],
         title: '账单记录',
       },
       component: () => import('@/pages/finance/billingRecords/index'),
@@ -37,7 +37,7 @@ export default {
       path: 'capital_flow/index',
       name: `${pre}capitalFlow`,
       meta: {
-        auth: ['finance-user_extract'],
+        auth: ['finance-capital_flow-index'],
         title: '资金流水',
       },
       component: () => import('@/pages/finance/capitalFlow/index'),

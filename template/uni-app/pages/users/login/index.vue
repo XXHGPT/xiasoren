@@ -90,7 +90,7 @@
 		</view>
 		<view class="bottom">
 			<view class="ver" v-if="copyRight">{{copyRight}}</view>
-			<view v-else class="ver">© 2014-2022
+			<view v-else class="ver">© 2014-2023
 				<a href="https://www.crmeb.com">www.crmeb.com</a>
 			</view>
 		</view>
@@ -129,7 +129,7 @@
 	// #endif
 	const BACK_URL = "login_back_url";
 	import colors from '@/mixins/color.js';
-	import Verify from '@/components/verify/verify.vue';
+	import Verify from '../components/verify/verify.vue';
 	export default {
 		name: "Login",
 		components: {

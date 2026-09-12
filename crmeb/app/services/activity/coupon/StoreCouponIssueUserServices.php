@@ -2,13 +2,13 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
 // | Author: CRMEB Team <admin@crmeb.com>
 // +----------------------------------------------------------------------
-declare (strict_types = 1);
+declare (strict_types=1);
 
 namespace app\services\activity\coupon;
 
@@ -42,6 +42,10 @@ class StoreCouponIssueUserServices extends BaseServices
     {
         [$page, $limit] = $this->getPageValue();
         $list = $this->dao->getList($where, $page, $limit);
+        $site_url = sys_config('site_url');
+        foreach ($list as &$item) {
+            $item['avatar'] = strpos($item['avatar'], 'http') === false ? ($site_url . $item['avatar']) : $item['avatar'];
+        }
         $count = $this->dao->count($where);
         return compact('list', 'count');
     }

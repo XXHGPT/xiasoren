@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -84,7 +84,7 @@ class StoreProductCouponServices extends BaseServices
             throw new ApiException(410173);
         }
         $key = 'order_product_coupon_' . $uid . '_' . $order['id'];
-        return CacheService::redisHandler()->get($key, []);
+        return CacheService::get($key, []);
     }
 
     /**
@@ -124,7 +124,7 @@ class StoreProductCouponServices extends BaseServices
             }
         }
         $key = 'order_product_coupon_' . $uid . '_' . $orderId;
-        CacheService::redisHandler()->set($key, $list, 7200);
+        CacheService::set($key, $list, 7200);
         return true;
     }
 }

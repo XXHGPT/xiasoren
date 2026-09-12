@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -72,6 +72,21 @@ class PublicController
         $diyService = app()->make(DiyServices::class);
         $data = $diyService->getDiy($id);
         return app('json')->success($data);
+    }
+
+    /**
+     * @param int $id
+     * @return mixed
+     * @author 等风来
+     * @email 136327134@qq.com
+     * @date 2023/2/8
+     */
+    public function getVersion($id = 0)
+    {
+        /** @var DiyServices $diyService */
+        $diyService = app()->make(DiyServices::class);
+        $version = $diyService->getDiyVersion((int)$id);
+        return app('json')->success(['version' => $version ?: '']);
     }
 
     /**

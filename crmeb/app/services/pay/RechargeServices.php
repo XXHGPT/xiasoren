@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -57,6 +57,9 @@ class RechargeServices
                 $userType = PayServices::ALIAPY_PAY;
                 break;
         }
+
+        $userType = get_pay_type($userType);
+
         if (!$userType) {
             throw new ApiException(410278);
         }
@@ -70,7 +73,14 @@ class RechargeServices
         } else {
             $openid = '';
         }
-        return $this->pay->pay($recharge['recharge_type'], $openid, $recharge['order_id'], $recharge['price'], 'user_recharge', '用户充值');
+
+        $res = $this->pay->pay($recharge['recharge_type'], $openid, $recharge['order_id'], $recharge['price'], 'user_recharge', '用户充值');
+
+        if ($userType === PayServices::ALLIN_PAY) {
+            $res['pay_type'] = $userType;
+        }
+
+        return $res;
     }
 
 }

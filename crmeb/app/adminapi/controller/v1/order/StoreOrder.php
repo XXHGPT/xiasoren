@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -81,6 +81,7 @@ class StoreOrder extends AuthController
         ]);
         $where['is_system_del'] = 0;
         $where['pid'] = 0;
+        if ($where['status'] == 1) $where = $where + ['shipping_type' => 1];
         return app('json')->success($this->services->getOrderList($where, ['*'], ['split' => function ($query) {
             $query->field('id,pid');
         }, 'pink', 'invoice', 'division']));
@@ -479,9 +480,15 @@ class StoreOrder extends AuthController
 
         $orderInfo = $this->services->tidyOrder($orderInfo->toArray(), true, true);
         //核算优惠金额
-        $vipTruePrice = array_column($orderInfo['cartInfo'], 'vip_sum_truePrice');
-        $vipTruePrice = round(array_sum($vipTruePrice), 2);
-        $orderInfo['vip_true_price'] = $vipTruePrice ?: 0;
+        $vipTruePrice = $levelPrice = $memberPrice = 0;
+        foreach ($orderInfo['cartInfo'] as $cart) {
+            $vipTruePrice = bcadd((string)$vipTruePrice, (string)$cart['vip_sum_truePrice'], 2);
+            if ($cart['price_type'] == 'member') $memberPrice = bcadd((string)$memberPrice, (string)$cart['vip_sum_truePrice'], 2);
+            if ($cart['price_type'] == 'level') $levelPrice = bcadd((string)$levelPrice, (string)$cart['vip_sum_truePrice'], 2);
+        }
+        $orderInfo['vip_true_price'] = $vipTruePrice;
+        $orderInfo['levelPrice'] = $levelPrice;
+        $orderInfo['memberPrice'] = $memberPrice;
         $orderInfo['total_price'] = bcadd($orderInfo['total_price'], $orderInfo['vip_true_price'], 2);
         if ($orderInfo['store_id'] && $orderInfo['shipping_type'] == 2) {
             /** @var  $storeServices */
@@ -687,15 +694,17 @@ class StoreOrder extends AuthController
     }
 
     /**
-     * 易联云打印机打印
+     * 小票打印机打印
      * @param $id
      * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      */
     public function order_print($id)
     {
         if (!$id) return app('json')->fail(100100);
-
-        $res = $this->services->orderPrint($id);
+        $res = $this->services->orderPrintTicket($id, true);
         if ($res) {
             return app('json')->success(100010);
         } else {

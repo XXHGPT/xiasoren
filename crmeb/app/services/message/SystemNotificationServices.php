@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -14,10 +14,6 @@ namespace app\services\message;
 
 use app\dao\system\SystemNotificationDao;
 use app\services\BaseServices;
-use app\services\serve\ServeServices;
-use crmeb\services\CacheService;
-use crmeb\services\template\Template;
-use think\facade\Cache;
 use crmeb\exceptions\AdminException;
 
 /**
@@ -74,8 +70,6 @@ class SystemNotificationServices extends BaseServices
      */
     public function getNotInfo(array $where)
     {
-        /** @var ServeServices $ServeServices */
-        $ServeServices = app()->make(ServeServices::class);
         /** @var TemplateMessageServices $TemplateMessageServices */
         $TemplateMessageServices = app()->make(TemplateMessageServices::class);
 

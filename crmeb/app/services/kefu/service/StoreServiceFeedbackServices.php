@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -16,7 +16,6 @@ use app\dao\service\StoreServiceFeedbackDao;
 use app\services\BaseServices;
 use crmeb\exceptions\AdminException;
 use crmeb\services\FormBuilder;
-use crmeb\traits\ServicesTrait;
 
 /**
  * 客服反馈
@@ -25,8 +24,6 @@ use crmeb\traits\ServicesTrait;
  */
 class StoreServiceFeedbackServices extends BaseServices
 {
-
-    use ServicesTrait;
 
     /**
      * StoreServiceFeedbackServices constructor.

@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -220,6 +220,17 @@ class StoreOrderRefundServices extends BaseServices
                         //支付宝退款
                         AliPayService::instance()->refund(strpos($refundOrder['trade_no'], '_') !== false ? $refundOrder['trade_no'] : $refundOrder['order_id'], floatval($refundData['refund_price']), $refund_id);
                         break;
+                    case PayServices::ALLIN_PAY:
+                        /** @var Pay $pay */
+                        $pay = app()->make(Pay::class, ['allin_pay']);
+                        /** @var StoreOrderServices $orderServices */
+                        $orderServices = app()->make(StoreOrderServices::class);
+                        $trade_no = $orderServices->value(['id' => $orderRefundInfo['store_order_id']], 'trade_no');
+                        $pay->refund($trade_no, [
+                            'order_id' => $refundOrder['order_id'],
+                            'refund_price' => $refundData['refund_price']
+                        ]);
+                        break;
                 }
             }
             //订单记录
@@ -263,10 +274,10 @@ class StoreOrderRefundServices extends BaseServices
 
             return $splitOrderInfo;
         });
+        //处理开票
+        app()->make(StoreOrderInvoiceServices::class)->update(['order_id' => $order['id']], ['is_refund' => 1]);
         //订单退款记录
         ProductLogJob::dispatch(['refund', ['uid' => $order['uid'], 'order_id' => $order['id']]]);
-        //订单同意退款事件
-        event('order.refund', [$refundData, $order, 'order_refund']);
         event('notice.notice', [['data' => $refundData, 'order' => $order], 'order_refund']);
         return true;
     }
@@ -1249,6 +1260,17 @@ class StoreOrderRefundServices extends BaseServices
             $storeOrderCartInfoServices->update(['oid' => $oid, 'cart_id' => $cart['id']], ['refund_num' => $refund_num]);
         }
         $storeOrderCartInfoServices->clearOrderCartInfo($oid);
+
+        //写入订单记录表
+        /** @var StoreOrderStatusServices $statusService */
+        $statusService = app()->make(StoreOrderStatusServices::class);
+        $statusService->save([
+            'oid' => $oid,
+            'change_type' => 'cancel_refund_order',
+            'change_message' => '取消退款',
+            'change_time' => time()
+        ]);
+
         //售后订单取消后置事件
         event('order.orderRefundCancelAfter', [$orderRefundInfo]);
         // 推送订单

@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -63,18 +63,16 @@ class UserLevel extends AuthController
             ['icon', ''],
             ['image', ''],
             ['is_show', ''],
-            ['explain', ''],
             ['exp_num', 0]
         ]);
         if ($data['valid_date'] == 0) $data['is_forever'] = 1;//有效时间为0的时候就是永久
         if (!$data['name']) return app('json')->fail(400324);
         if (!$data['grade']) return app('json')->fail(400325);
-        if (!$data['explain']) return app('json')->fail(400326);
         if (!$data['icon']) return app('json')->fail(400327);
         if (!$data['image']) return app('json')->fail(400328);
         if (!$data['exp_num']) return app('json')->fail(400329);
-
-        return app('json')->success($this->services->save((int)$data['id'], $data));
+        $this->services->save((int)$data['id'], $data);
+        return app('json')->success(100000);
     }
 
     /*

@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -17,7 +17,6 @@ use app\services\user\UserServices;
 use crmeb\exceptions\AdminException;
 use crmeb\exceptions\ApiException;
 use crmeb\services\FormBuilder;
-use crmeb\traits\ServicesTrait;
 
 /**
  * 客服
@@ -27,7 +26,6 @@ use crmeb\traits\ServicesTrait;
  */
 class StoreServiceServices extends BaseServices
 {
-    use ServicesTrait;
 
     /**
      * 创建form表单

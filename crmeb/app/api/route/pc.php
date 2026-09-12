@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -28,7 +28,7 @@ Route::group('pc', function () {
         Route::get('get_banner', 'pc.HomeController/getBanner')->name('getBanner');//PC首页轮播图
         Route::get('get_category_product', 'pc.HomeController/getCategoryProduct')->name('getCategoryProduct');//首页分类尚品
         Route::get('get_products', 'pc.ProductController/getProductList')->name('getProductList');//商品列表
-        Route::get('get_product_code/:product_id', 'pc.ProductController/getProductRoutineCode')->name('getProductRoutineCode');//商品详情小程序二维码
+        Route::get('get_product_code/:product_id/[:type]', 'pc.ProductController/getProductRoutineCode')->name('getProductRoutineCode');//商品详情小程序二维码
         Route::get('get_city/:pid', 'pc.PublicController/getCity')->name('getCity');//获取城市数据
         Route::get('check_order_status/:order_id/:end_time', 'pc.OrderController/checkOrderStatus')->name('checkOrderStatus');//轮询订单状态接口
         Route::get('get_company_info', 'pc.PublicController/getCompanyInfo')->name('getCompanyInfo');//获取公司信息

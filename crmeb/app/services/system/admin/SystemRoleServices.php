@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -105,7 +105,7 @@ class SystemRoleServices extends BaseServices
         }
 
         // 获取所有接口类型以及对应的接口
-        $allAuth = Cache::remember('all_auth', function () {
+        $allAuth = $this->cacheDriver()->remember('all_auth', function () {
             /** @var SystemMenusServices $menusService */
             $menusService = app()->make(SystemMenusServices::class);
             $allList = $menusService->getColumn([['api_url', '<>', ''], ['auth_type', '=', 2]], 'api_url,methods');
@@ -140,7 +140,7 @@ class SystemRoleServices extends BaseServices
     {
         if (empty($rules)) return [];
         $cacheName = md5($cachePrefix . '_' . $type . '_' . implode('_', $rules));
-        return Cache::remember($cacheName, function () use ($rules, $type) {
+        return $this->cacheDriver()->remember($cacheName, function () use ($rules, $type) {
             /** @var SystemMenusServices $menusService */
             $menusService = app()->make(SystemMenusServices::class);
             $authList = $menusService->getColumn([['id', 'IN', $this->getRoleIds($rules)], ['auth_type', '=', $type]], 'api_url,methods');

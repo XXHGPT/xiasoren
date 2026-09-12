@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -146,7 +146,12 @@ class WechatService
                             $response = $messageService->wechatEventView($message);
                             break;
                         case 'funds_order_pay':
-                            $prefix = substr($message['order_info']['trade_no'], 0, 2);
+                            if (($count = strpos($message['order_info']['trade_no'], '_')) !== false) {
+                                $trade_no = substr($message['order_info']['trade_no'], $count + 1);
+                            } else {
+                                $trade_no = $message['order_info']['trade_no'];
+                            }
+                            $prefix = substr($trade_no, 0, 2);
                             //处理一下参数
                             switch ($prefix) {
                                 case 'cp':

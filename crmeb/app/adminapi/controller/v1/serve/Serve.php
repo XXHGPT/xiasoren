@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -44,7 +44,7 @@ class Serve extends AuthController
      */
     public function is_login()
     {
-        $sms_info = CacheService::redisHandler()->get('sms_account');
+        $sms_info = CacheService::get('sms_account');
         if ($sms_info) {
             return app('json')->success(['status' => true, 'info' => $sms_info]);
         } else {
@@ -188,7 +188,7 @@ class Serve extends AuthController
 
         $data['password'] = md5($data['password']);
         $this->services->user()->modify($data);
-        CacheService::redisHandler()->delete('sms_account');
+        CacheService::delete('sms_account');
         return app('json')->success(100001);
     }
 
@@ -207,7 +207,7 @@ class Serve extends AuthController
         $this->validate($data, ServeValidata::class, 'phone');
 
         $this->services->user()->modifyPhone($data);
-        CacheService::redisHandler()->delete('sms_account');
+        CacheService::delete('sms_account');
         return app('json')->success(100001);
     }
 }

@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -20,11 +20,9 @@ use think\facade\Config;
 
 /**
  * 第三方支付
- * Class Pay
+ * Class AllinPay
  * @package crmeb\services\pay
- * @mixin AliPay
  * @mixin WechatPay
- * @mixin V3WechatPay
  */
 class Pay extends BaseManager
 {

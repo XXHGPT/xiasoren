@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -11,12 +11,10 @@
 
 namespace app\jobs\notice;
 
-
+use app\services\order\StoreOrderServices;
 use crmeb\basic\BaseJobs;
-use crmeb\services\printer\Printer;
 use crmeb\traits\QueueTrait;
 use think\facade\Log;
-
 
 /**
  * 小票打印
@@ -29,28 +27,18 @@ class PrintJob extends BaseJobs
 
     /**
      * 小票打印
-     * @param $type
-     * @param $configData
-     * @param $order
-     * @param $product
+     * @param $id
      * @return bool|void
      */
-    public function doJob($type, $configData, $order, $product)
+    public function doJob($id)
     {
-
         try {
-            $printer = new Printer($type, $configData);
-            $printer->setPrinterContent([
-                'name' => sys_config('site_name'),
-                'url' => sys_config('site_url'),
-                'orderInfo' => is_object($order) ? $order->toArray() : $order,
-                'product' => $product
-            ])->startPrinter();
+            /** @var StoreOrderServices $orderServices */
+            $orderServices = app()->make(StoreOrderServices::class);
+            $orderServices->orderPrintTicket((int)$id);
             return true;
         } catch (\Throwable $e) {
             Log::error('小票打印失败失败,失败原因:' . $e->getMessage());
         }
-
     }
-
 }

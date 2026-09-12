@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -91,30 +91,17 @@ class SystemFileServices extends BaseServices
 
         //检测token是否过期
         $md5Token = md5($token);
-        if (!$cacheService->hasToken($md5Token) || !($cacheToken = $cacheService->getTokenBucket($md5Token))) {
-            throw new AuthException(110008);
-        }
-
-        //是否超出有效次数
-        if (isset($cacheToken['invalidNum']) && $cacheToken['invalidNum'] >= 3) {
-            if (!request()->isCli()) {
-                $cacheService->clearToken($md5Token);
-            }
+        if (!$cacheService->has($md5Token) || !($cacheService->get($md5Token))) {
             throw new AuthException(110008);
         }
 
         //验证token
         try {
             $jwtAuth->verifyToken();
-            $cacheService->setTokenBucket($md5Token, $cacheToken, $cacheToken['exp']);
-        } catch (ExpiredException $e) {
-            $cacheToken['invalidNum'] = isset($cacheToken['invalidNum']) ? $cacheToken['invalidNum']++ : 1;
-            $cacheService->setTokenBucket($md5Token, $cacheToken, $cacheToken['exp']);
         } catch (\Throwable $e) {
             if (!request()->isCli()) {
-                $cacheService->clearToken($md5Token);
+                $cacheService->delete($md5Token);
             }
-
             throw new AuthException(110008);
         }
 

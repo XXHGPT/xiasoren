@@ -1,0 +1,1 @@
+(global["webpackJsonp"]=global["webpackJsonp"]||[]).push([["pages/points_mall/common/vendor"],{cd64:function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.getStoreIntegral=l;var o=a(n("b2ca"));function a(e){return e&&e.__esModule?e:{default:e}}function l(e){return o.default.get("store_integral/index",e)}}}]);

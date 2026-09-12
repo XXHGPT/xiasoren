@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -11,6 +11,7 @@
 
 namespace app\services\system\admin;
 
+use app\jobs\CheckQueueJob;
 use app\services\BaseServices;
 use app\services\order\StoreOrderServices;
 use app\services\product\product\StoreProductReplyServices;
@@ -154,7 +155,7 @@ class SystemAdminServices extends BaseServices
     public function getLoginInfo()
     {
         $key = uniqid();
-        event('admin.info', [$key]);
+        CheckQueueJob::dispatch([$key]);
         $data = [
             'slide' => sys_data('admin_login_slide') ?? [],
             'logo_square' => sys_config('site_logo_square'),//透明
@@ -166,7 +167,7 @@ class SystemAdminServices extends BaseServices
             'key' => $key,
             'login_captcha' => 0
         ];
-        if (CacheService::redisHandler()->get('login_captcha', 1) > 1) {
+        if (CacheService::get('login_captcha', 1) > 1) {
             $data['login_captcha'] = 1;
         }
         return $data;
@@ -264,7 +265,7 @@ class SystemAdminServices extends BaseServices
 
         return $this->transaction(function () use ($data) {
             if ($this->dao->save($data)) {
-                \think\facade\Cache::clear();
+                CacheService::clear();
                 return true;
             } else {
                 throw new AdminException(100022);
@@ -328,7 +329,7 @@ class SystemAdminServices extends BaseServices
         $adminInfo->account = $data['account'] ?? $adminInfo->account;
         $adminInfo->status = $data['status'];
         if ($adminInfo->save()) {
-            \think\facade\Cache::clear();
+            CacheService::clear();
             return true;
         } else {
             return false;

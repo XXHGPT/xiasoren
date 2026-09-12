@@ -1,7 +1,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -26,7 +26,7 @@ import fresh from './module/fresh';
 import kefu from './module/kefu';
 import integralOrder from './module/integralOrder';
 import mobildConfig from './module/mobildConfig';
-import upgrade from "./module/upgrade"
+import upgrade from './module/upgrade';
 
 Vue.use(Vuex);
 // 持久化储存
@@ -78,6 +78,6 @@ export default new Vuex.Store({
     kefu,
     mobildConfig,
     integralOrder,
-    upgrade
+    upgrade,
   },
 });

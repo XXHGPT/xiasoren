@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -35,6 +35,7 @@ use app\services\system\store\SystemStoreServices;
 use app\services\activity\combination\StoreCombinationServices;
 use app\services\product\product\StoreProductServices;
 use think\facade\Cache;
+use think\facade\Config;
 use think\facade\Log;
 
 /**
@@ -61,17 +62,28 @@ class StoreOrderCreateServices extends BaseServices
     public function getNewOrderId(string $prefix = 'wx')
     {
         $snowflake = new \Godruoyi\Snowflake\Snowflake();
-        $is_callable = function ($currentTime) {
-            $redis = Cache::store('redis');
-            $swooleSequenceResolver = new \Godruoyi\Snowflake\RedisSequenceResolver($redis->handler());
-            return $swooleSequenceResolver->sequence($currentTime);
-        };
-        //32位
-        if (PHP_INT_SIZE == 4) {
-            $id = abs($snowflake->setSequenceResolver($is_callable)->id());
+
+        if (Config::get('cache.default') == 'file') {
+            //32位 
+            if (PHP_INT_SIZE == 4) {
+                $id = abs($snowflake->id());
+            } else {
+                $id = $snowflake->setStartTimeStamp(strtotime('2022-01-01') * 1000)->id();
+            }
         } else {
-            $id = $snowflake->setStartTimeStamp(strtotime('2020-06-05') * 1000)->setSequenceResolver($is_callable)->id();
+            $is_callable = function ($currentTime) {
+                $redis = Cache::store('redis');
+                $swooleSequenceResolver = new \Godruoyi\Snowflake\RedisSequenceResolver($redis->handler());
+                return $swooleSequenceResolver->sequence($currentTime);
+            };
+            //32位
+            if (PHP_INT_SIZE == 4) {
+                $id = abs($snowflake->setSequenceResolver($is_callable)->id());
+            } else {
+                $id = $snowflake->setStartTimeStamp(strtotime('2022-01-01') * 1000)->setSequenceResolver($is_callable)->id();
+            }
         }
+
         return $prefix . $id;
     }
 
@@ -355,7 +367,7 @@ class StoreOrderCreateServices extends BaseServices
         //删除购物车
         if ($group['news']) {
             array_map(function ($key) {
-                CacheService::redisHandler()->delete($key);
+                CacheService::delete($key);
             }, $group['cartIds']);
         } else {
             /** @var StoreCartServices $cartServices */
@@ -650,9 +662,10 @@ class StoreOrderCreateServices extends BaseServices
                     case 1://品类券
                         /** @var StoreCategoryServices $storeCategoryServices */
                         $storeCategoryServices = app()->make(StoreCategoryServices::class);
-                        $cateGorys = $storeCategoryServices->getAllById((int)$couponInfo['category_id']);
-                        if ($cateGorys) {
-                            $cateIds = array_column($cateGorys, 'id');
+                        $coupon_category = explode(',', (string)$couponInfo['category_id']);
+                        $category_ids = $storeCategoryServices->getAllById($coupon_category);
+                        if ($category_ids) {
+                            $cateIds = array_column($category_ids, 'id');
                             foreach ($cartInfo as $cart) {
                                 if (isset($cart['productInfo']['cate_id']) && array_intersect(explode(',', $cart['productInfo']['cate_id']), $cateIds)) {
                                     $total_price = bcadd((string)$total_price, (string)bcmul((string)$cart['truePrice'], (string)$cart['cart_num'], 4), 2);

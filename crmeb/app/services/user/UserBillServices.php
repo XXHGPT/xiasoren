@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -692,7 +692,7 @@ class UserBillServices extends BaseServices
         $where = [];
         $where['not_type'] = ['gain', 'system_sub', 'deduction', 'sign'];
         $where['not_category'] = ['exp', 'integral'];
-        return Cache::remember('user_type_list', function () use ($where) {
+        return $this->cacheDriver()->remember('user_type_list', function () use ($where) {
             return ['list' => $this->getBillType($where)];
         }, 600);
     }
@@ -780,7 +780,7 @@ class UserBillServices extends BaseServices
         $userExtract = app()->make(UserExtractServices::class);
         $extractSumList = $userExtract->getUsersSumList($uids);
         foreach ($list as &$item) {
-            $item['sum_number'] = $item['income'] > $item['pay'] ? bcsub($item['income'], $item['pay'], 2) : 0;
+            $item['sum_number'] = $item['income'];
             $item['nickname'] = $item['nickname'] . "|" . ($item['phone'] ? $item['phone'] . "|" : '') . $item['uid'];
             $item['extract_price'] = $extractSumList[$item['uid']] ?? 0;
             $item['time'] = $item['time'] ? date('Y-m-d H:i:s', $item['time']) : '';

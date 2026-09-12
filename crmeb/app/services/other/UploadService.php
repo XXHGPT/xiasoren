@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -115,7 +115,9 @@ class UploadService
         $fileHost = $fileArr['scheme'] . '://' . $fileArr['host'];
         /** @var SystemStorageServices $storageServices */
         $storageServices = app()->make(SystemStorageServices::class);
-        $storageArr = $storageServices->selectList([])->toArray();
+        $storageArr = $storageServices->cacheDriver()->remember('storage_list', function () use ($storageServices) {
+            return $storageServices->selectList([], 'domain')->toArray();
+        });
         foreach ($storageArr as $item) {
             if ($fileHost == $item['domain']) {
                 return self::init($item['type'])->setFilepath($filePath);

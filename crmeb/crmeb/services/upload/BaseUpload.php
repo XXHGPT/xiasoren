@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -198,7 +198,7 @@ abstract class BaseUpload extends BaseStorage
         if (is_null($validate)) {
             $validate = $this->getConfig();
         }
-        $this->extractValidate($validate);
+        $this->validate = $validate;
         return $this;
     }
 
@@ -214,19 +214,6 @@ abstract class BaseUpload extends BaseStorage
             $path = substr($path, 1);
         }
         return $path;
-    }
-
-    /**
-     * 提取上传验证
-     */
-    protected function extractValidate(array $validateArray)
-    {
-        $validate = [];
-        foreach ($validateArray as $key => $value) {
-            $validate[] = $key . ':' . (is_array($value) ? implode(',', $value) : $value);
-        }
-        $this->validate = implode('|', $validate);
-        unset($validate);
     }
 
     /**

@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -56,19 +56,21 @@ class ProductServices extends BaseServices
     /**
      * PC端商品详情小程序码
      * @param int $product_id
-     * @return bool|int|mixed|string
+     * @param string $type
+     * @return false|mixed|string
      */
-    public function getProductRoutineCode(int $product_id)
+    public function getProductRoutineCode(int $product_id, string $type = 'product')
     {
         try {
-            $namePath = 'routine_product_' . $product_id . '.jpg';
+            $namePath = $type == 'product' ? 'routine_product_' . $product_id . '.jpg' : 'routine_seckill_product_' . $product_id . '.jpg';
             $data = 'id=' . $product_id;
             /** @var SystemAttachmentServices $systemAttachmentService */
             $systemAttachmentService = app()->make(SystemAttachmentServices::class);
             $imageInfo = $systemAttachmentService->getOne(['name' => $namePath]);
             $siteUrl = sys_config('site_url');
             if (!$imageInfo) {
-                $res = MiniProgramService::appCodeUnlimitService($data, 'pages/goods_details/index', 280);
+                $page = $type == 'product' ? 'pages/goods_details/index' : 'pages/activity/goods_seckill_details/index';
+                $res = MiniProgramService::appCodeUnlimitService($data, $page, 280);
                 if (!$res) return false;
                 $uploadType = (int)sys_config('upload_type', 1);
                 $upload = UploadService::init();

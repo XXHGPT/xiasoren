@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -67,10 +67,11 @@ class StoreCouponIssue extends AuthController
             ['is_permanent', 0],
             ['total_count', 0],
             ['product_id', ''],
-            ['category_id', 0],
+            ['category_id', []],
             ['type', 0],
             ['sort', 0],
             ['status', 0],
+            ['receive_limit', 1],
         ]);
         $res = $this->services->saveCoupon($data);
         if ($res) return app('json')->success(100000);
@@ -108,6 +109,12 @@ class StoreCouponIssue extends AuthController
                     'product_id' => $item,
                     'image' => $productImages[$item]
                 ];
+            }
+        }
+        if ($info['category_id'] != '') {
+            $info['category_id'] = explode(',', $info['category_id']);
+            foreach ($info['category_id'] as &$category_id) {
+                $category_id = (int)$category_id;
             }
         }
         return app('json')->success($info);

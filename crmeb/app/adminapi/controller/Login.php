@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
 // +----------------------------------------------------------------------
@@ -104,14 +104,14 @@ class Login extends AuthController
         $this->validate(['account' => $account, 'pwd' => $password], \app\adminapi\validate\setting\SystemAdminValidata::class, 'get');
         $result = $this->services->login($account, $password, 'admin', $key);
         if (!$result) {
-            $num = CacheService::redisHandler()->get('login_captcha',1);
+            $num = CacheService::get('login_captcha',1);
             if ($num > 1) {
                 return app('json')->fail(400140, ['login_captcha' => 1]);
             }
-            CacheService::redisHandler()->set('login_captcha', $num + 1, 60);
+            CacheService::set('login_captcha', $num + 1, 60);
             return app('json')->fail(400140, ['login_captcha' => 0]);
         }
-        CacheService::redisHandler()->delete('login_captcha');
+        CacheService::delete('login_captcha');
         return app('json')->success($result);
     }
 
